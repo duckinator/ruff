@@ -31,7 +31,7 @@ def _write_if_needed(filename, text):
         path.write_text(text)
 
 
-def init(_args):
+def init(_script):
     _write_if_needed('pyproject.toml', dedent("""\
         [build-system]
         requires = ["setuptools", "wheel"]
@@ -49,7 +49,7 @@ def init(_args):
         """))
 
 
-def build(script, *args):
+def build(_script, *args):
     if not Path(Path.cwd(), 'pyproject.toml').exists():
         sys.exit("error: pyproject.toml doesn't exist.")
 
