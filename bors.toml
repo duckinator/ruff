@@ -1,0 +1,9 @@
+status = [
+  "lint",
+  "repos REPO:https://github.com/astronouth7303/ppb-mutant.git",
+  "repos REPO:https://github.com/duckinator/bork.git",
+  "repos REPO:https://github.com/duckinator/emanate.git",
+  "repos REPO:https://github.com/ppb/ppb-vector.git",
+]
+
+delete_merged_branches = true

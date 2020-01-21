@@ -1,0 +1,45 @@
+# Allow compute credits usage for collaborators and anything pushed to the
+# master, staging, and trying branches. (So bors can use them.)
+use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true' || $CIRRUS_BRANCH == 'master' || $CIRRUS_BRANCH == 'staging' || $CIRRUS_BRANCH == 'trying'
+
+lint_task:
+  container:
+    image: python:3-slim
+  install_script:
+    - pip install flake8
+  script:
+    - flake8 --version
+    - flake8 --isolated ruff.py
+
+ruff_init_task:
+  container:
+    image: python:3-slim
+  setup_script:
+    - mkdir /tmp/ruff-init
+    - cp ruff.py /tmp/ruff-init
+  script:
+    - cd /tmp/ruff-init
+    - ./ruff.py init
+    - stat pyproject.toml
+    - stat setup.cfg
+
+repos_task:
+  container:
+    image: python:3-slim
+  env:
+    LC_ALL: C.UTF-8
+    LANG: C.UTF-8
+    matrix:
+      - REPO: https://github.com/astronouth7303/ppb-mutant.git
+      - REPO: https://github.com/duckinator/bork.git
+      - REPO: https://github.com/duckinator/emanate.git
+      - REPO: https://github.com/ppb/ppb-vector.git
+  install_script:
+    - apt-get update
+    - apt-get install -y git
+  script:
+    - git clone $REPO /tmp/repo
+    - cp ./ruff.py /tmp/repo
+    - cd /tmp/repo
+    - ./ruff.py clean
+    - ./ruff.py build
