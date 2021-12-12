@@ -61,7 +61,7 @@ def build(_script, *args):
         args = ['.']
 
     if len(args) != 1:
-        sys.exit(f"usage: {sys.argv[0]} build [SOURCE_DIRECTORY]\n\n" + \
+        sys.exit(f"usage: {sys.argv[0]} build [SOURCE_DIRECTORY]\n\n" +
                  "SOURCE_DIRECTORY\troot directory of the project")
 
     source_directory = args[0]
