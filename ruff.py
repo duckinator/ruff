@@ -19,6 +19,7 @@ __version__ = '2.0.0'
 #   1.0.0 - initial release
 #   2.0.0 - switched from `pep517.build` (which is deprecated) to `build`
 
+
 def _try_rmtree(path):
     if Path(path).is_dir():
         shutil.rmtree(path)
@@ -60,7 +61,8 @@ def build(_script, *args):
         args = ['.']
 
     if len(args) != 1:
-        sys.exit(f"usage: {sys.argv[0]} build [SOURCE_DIRECTORY]\nSOURCE_DIRECTORY\tthe root directory of the project being built")
+        sys.exit(f"usage: {sys.argv[0]} build [SOURCE_DIRECTORY]\n\n" + \
+                 "SOURCE_DIRECTORY\troot directory of the project")
 
     source_directory = args[0]
 
