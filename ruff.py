@@ -7,14 +7,17 @@ import sys
 from textwrap import dedent
 
 __author__ = 'Ellen Marie Dash'
-__version__ = '1.0.0'
+__version__ = '2.0.0'
 
 # Latest source: https://github.com/duckinator/ruff/blob/master/ruff.py
 
 # Released under the MIT license.
-# Copyright (c) 2018 Ellen Marie Dash
+# Copyright (c) 2018, 2021 Ellen Marie Dash
 # https://opensource.org/licenses/MIT
 
+# Notable changes:
+#   1.0.0 - initial release
+#   2.0.0 - switched from `pep517.build` (which is deprecated) to `build`
 
 def _try_rmtree(path):
     if Path(path).is_dir():
@@ -53,15 +56,23 @@ def build(_script, *args):
     if not Path(Path.cwd(), 'pyproject.toml').exists():
         sys.exit("error: pyproject.toml doesn't exist.")
 
-    try:
-        import pep517.build
-    except ModuleNotFoundError:
-        check_call([sys.executable, '-m', 'pip', 'install', '-qq', 'pep517'])
-        import pep517.build
-
     if not args:
-        args = ['--binary', '--source', '.']
-    pep517.build.main(pep517.build.parser.parse_args(args))
+        args = ['.']
+
+    if len(args) != 1:
+        sys.exit(f"usage: {sys.argv[0]} build [SOURCE_DIRECTORY]\nSOURCE_DIRECTORY\tthe root directory of the project being built")
+
+    source_directory = args[0]
+
+    try:
+        import build
+    except ModuleNotFoundError:
+        check_call([sys.executable, '-m', 'pip', 'install', '-qq', 'build'])
+        import build
+
+    builder = build.ProjectBuilder(source_directory)
+    builder.build('sdist', './dist/')
+    builder.build('wheel', './dist/')
 
 
 def clean(_script):
